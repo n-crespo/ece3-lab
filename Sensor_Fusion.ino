@@ -13,8 +13,10 @@ void loop() {
 
   const unsigned int maxValues[8] = {1627, 1696, 1249, 1201, 1081, 1252, 1587, 1721};
   const unsigned int minValues[8] = {873, 804, 711, 664, 646, 642, 711, 779};
+
   double values[8];
 
+  // this goes for each sensor (8 sensors)
   for (unsigned char i = 0; i < 8; i++) {
 
     int raw = sensorValues[i];
@@ -26,8 +28,10 @@ void loop() {
     Serial.print('\t'); // Tab to format the raw data into columns in the Serial monitor
   }
 
+  // calculate the error based on all sensor values
   double error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
-                  values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) / 4.0;
+      values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) / 4.0;
+
   Serial.print("error: ");
   Serial.println(error);
 
