@@ -93,7 +93,7 @@ void loop() {
 
   // this moves the car
   int base_speed = 50;
-  float kp = 0.03;
+  float kp = 0.04;
   float kd = 0.15;
   // how much should derivative affect this thing? needs to be tuned
 
@@ -104,15 +104,20 @@ void loop() {
 
   // int leftSpd_pwm = constrain(leftSpd_f, 0, 255); // Constrain to 0-255
   // int rightSpd_pwm = constrain(rightSpd_f, 0, 255);
+  if (rightSpd_f < 0) {
+    digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
+  } else {
+    digitalWrite(right_dir_pin, LOW); // set this to high for donut!
+  }
 
-  // Serial.print(", l: ");
-  // Serial.print(leftSpd_pwm);
-  //
-  // Serial.print(", r: ");
-  // Serial.println(rightSpd_pwm);
+  if (leftSpd_f < 0) {
+    digitalWrite(left_dir_pin, HIGH); // set this to high for donut!
+  } else {
+    digitalWrite(left_dir_pin, LOW); // set this to high for donut!
+  }
 
-  analogWrite(left_pwm_pin, leftSpd_f);
-  analogWrite(right_pwm_pin, rightSpd_f);
+  analogWrite(left_pwm_pin, abs(leftSpd_f));
+  analogWrite(right_pwm_pin, abs(rightSpd_f));
 
   // flashes the LED
   // digitalWrite(LED_RF, HIGH);
