@@ -92,7 +92,7 @@ void loop() {
   // previous_time = current_time;
 
   // this moves the car
-  int base_speed = 50;
+  int base_speed = 60;
   float kp = 0.04;
   float kd = 0.15;
   // how much should derivative affect this thing? needs to be tuned
