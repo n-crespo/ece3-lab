@@ -76,34 +76,34 @@ void loop() {
   // Serial.print(error);
 
   /////////////// PD CONTROLLER ///////////////////
-  unsigned long current_time = millis();
+  // unsigned long current_time = millis();
 
-  // Time difference in seconds
-  double dt_seconds = (double)(current_time - previous_time) / 1000.0;
+  // // Time difference in seconds
+  // double dt_seconds = (double)(current_time - previous_time) / 1000.0;
 
-  // prevent division by zero (dt is too small)
-  if (dt_seconds == 0) {
-    dt_seconds = 1.0 / 50.0; // use a small dt instead of zero
-  }
+  // // prevent division by zero (dt is too small)
+  // if (dt_seconds == 0) {
+  //   dt_seconds = 1.0 / 50.0; // use a small dt instead of zero
+  // }
 
-  double derivative = (error - previous_error) / dt_seconds;
+  double derivative = (error - previous_error);
   // update for next iteration
   previous_error = error;
-  previous_time = current_time;
+  // previous_time = current_time;
 
   // this moves the car
-  int base_speed = 25;
-  float kp = 0.08;
-  float kd =
-      0.02; // how much should derivative affect this thing? needs to be tuned
+  int base_speed = 30;
+  float kp = 0.015;
+  float kd = 0.04;
+  // how much should derivative affect this thing? needs to be tuned
 
   double adjustment = (kp * error) + (kd * derivative);
 
   float rightSpd_f = base_speed + adjustment;
   float leftSpd_f = base_speed - adjustment;
 
-  int leftSpd_pwm = constrain(leftSpd_f, 0, 255); // Constrain to 0-255
-  int rightSpd_pwm = constrain(rightSpd_f, 0, 255);
+  // int leftSpd_pwm = constrain(leftSpd_f, 0, 255); // Constrain to 0-255
+  // int rightSpd_pwm = constrain(rightSpd_f, 0, 255);
 
   // Serial.print(", l: ");
   // Serial.print(leftSpd_pwm);
@@ -111,8 +111,8 @@ void loop() {
   // Serial.print(", r: ");
   // Serial.println(rightSpd_pwm);
 
-  analogWrite(left_pwm_pin, leftSpd_pwm);
-  analogWrite(right_pwm_pin, rightSpd_pwm);
+  analogWrite(left_pwm_pin, leftSpd_f);
+  analogWrite(right_pwm_pin, rightSpd_f);
 
   // flashes the LED
   // digitalWrite(LED_RF, HIGH);
@@ -121,5 +121,4 @@ void loop() {
   // delay(250);
 
   // Serial.println();
-  delay(50);
 }
