@@ -93,8 +93,8 @@ void loop() {
 
   // this moves the car
   int base_speed = 30;
-  float kp = 0.015;
-  float kd = 0.04;
+  float kp = 0.02;
+  float kd = 0.05;
   // how much should derivative affect this thing? needs to be tuned
 
   double adjustment = (kp * error) + (kd * derivative);
