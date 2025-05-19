@@ -12,7 +12,7 @@ const int right_dir_pin = 30;
 const int right_pwm_pin = 39;
 
 // PD Controller variables
-double previous_error = 0.0;
+float previous_error = 0.0;
 unsigned long previous_time = 0;
 
 void setup() {
@@ -45,7 +45,7 @@ void loop() {
                                      1081, 1252, 1587, 1721};
   const unsigned int minValues[8] = {873, 804, 711, 664, 646, 642, 711, 779};
 
-  double values[8];
+  float values[8];
 
   // this goes for each sensor (8 sensors)
   for (unsigned char i = 0; i < 8; i++) {
@@ -60,7 +60,7 @@ void loop() {
       values[i] = 0; // just set it to zero in this case to avoid /0
     } else {
       values[i] =
-          (double)(raw - minValues[i]) * 1000.0 / (maxValues[i] - minValues[i]);
+          (float)(raw - minValues[i]) * 1000.0 / (maxValues[i] - minValues[i]);
     }
     // Serial.print(sensorValues[i]);
     // Serial.print( ' '); // Tab to format the raw data into columns in the
@@ -68,9 +68,9 @@ void loop() {
   }
 
   // calculate the error based on all sensor values
-  double error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
-                  values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) /
-                 4.0; // we could trade 4.0 for the sum of the weight? idk
+  float error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
+                 values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) /
+                4.0; // we could trade 4.0 for the sum of the weight? idk
 
   // Serial.print("e:");
   // Serial.print(error);
@@ -79,14 +79,14 @@ void loop() {
   // unsigned long current_time = millis();
 
   // // Time difference in seconds
-  // double dt_seconds = (double)(current_time - previous_time) / 1000.0;
+  // float dt_seconds = (float)(current_time - previous_time) / 1000.0;
 
   // // prevent division by zero (dt is too small)
   // if (dt_seconds == 0) {
   //   dt_seconds = 1.0 / 50.0; // use a small dt instead of zero
   // }
 
-  double derivative = (error - previous_error);
+  float derivative = (error - previous_error);
   // update for next iteration
   previous_error = error;
   // previous_time = current_time;
@@ -97,7 +97,7 @@ void loop() {
   float kd = 0.15;
   // how much should derivative affect this thing? needs to be tuned
 
-  double adjustment = (kp * error) + (kd * derivative);
+  float adjustment = (kp * error) + (kd * derivative);
 
   float rightSpd_f = base_speed + adjustment;
   float leftSpd_f = base_speed - adjustment;
