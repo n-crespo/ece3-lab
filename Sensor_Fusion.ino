@@ -36,6 +36,7 @@ void setup() {
                       // transmission
   delay(2000);
   previous_time = millis(); // Initialize previous_time
+  int reached_end = 0;
 }
 
 void loop() {
@@ -86,7 +87,14 @@ void loop() {
   //   dt_seconds = 1.0 / 50.0; // use a small dt instead of zero
   // }
 
+  // Serial.print("error: ");
+  // Serial.println(error);
+
   float derivative = (error - previous_error);
+
+  // Serial.print("derivative: ");
+  // Serial.println(derivative);
+
   // update for next iteration
   previous_error = error;
   // previous_time = current_time;
@@ -104,6 +112,7 @@ void loop() {
 
   // int leftSpd_pwm = constrain(leftSpd_f, 0, 255); // Constrain to 0-255
   // int rightSpd_pwm = constrain(rightSpd_f, 0, 255);
+
   if (rightSpd_f < 0) {
     digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
   } else {
@@ -114,6 +123,15 @@ void loop() {
     digitalWrite(left_dir_pin, HIGH); // set this to high for donut!
   } else {
     digitalWrite(left_dir_pin, LOW); // set this to high for donut!
+  }
+
+  if (error < -2300 && reached_end == 1) {
+    reached_end = false;
+    digitalWrite(right_dir_pin, LOW); // set this to high for donut!
+
+  } else if (error < -2300 && reached_end == 0) {
+    reached_end = true;
+    digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
   }
 
   analogWrite(left_pwm_pin, abs(leftSpd_f));
