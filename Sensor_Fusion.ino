@@ -46,7 +46,7 @@ void loop() {
 
   float values[8];
 
-  // this goes for each sensor (8 sensors)
+  // normalize values raw --> in bounds
   for (unsigned char i = 0; i < 8; i++) {
     int raw = sensorValues[i];
     if (raw < minValues[i])
@@ -67,11 +67,14 @@ void loop() {
   }
 
   // calculate the error based on all sensor values
-  float error = (-6 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
-                 values[4] + 2 * values[5] + 4 * values[6] + 6 * values[7]) /
-                4.0; // we could trade 4.0 for the sum of the weight? idk
+  int bias = -1;
+  float error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
+                 values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) /
+                    4.0 +
+                bias; // we could trade 4.0 for the sum of the weight? idk
 
   float derivative = (error - previous_error);
+  // Serial.println(error);
   previous_error = error; // update for next iteration
 
   // this moves the car
@@ -84,17 +87,6 @@ void loop() {
 
   float rightSpd_f = base_speed + adjustment;
   float leftSpd_f = base_speed - adjustment;
-
-  // int leftSpd_pwm = constrain(leftSpd_f, 0, 255); // Constrain to 0-255
-  // int rightSpd_pwm = constrain(rightSpd_f, 0, 255);
-
-  // if (error < -2300 || reached_end == 1) {
-  //   reached_end = false;
-  //   digitalWrite(right_dir_pin, LOW); // set this to high for donut!
-  // } else if (error < -2300 && reached_end == 0) {
-  //   reached_end = true;
-  //   digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
-  // }
 
   if (rightSpd_f < 0) {
     digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
