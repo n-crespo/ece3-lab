@@ -13,7 +13,7 @@ const int right_pwm_pin = 39;
 
 // PD Controller variables
 float previous_error = 0.0;
-unsigned long previous_time = 0;
+// int reached_end = 0;
 
 void setup() {
   // for moving the car:
@@ -35,8 +35,6 @@ void setup() {
   Serial.begin(9600); // Set the data rate in bits per second for serial data
                       // transmission
   delay(2000);
-  previous_time = millis(); // Initialize previous_time
-  int reached_end = 0;
 }
 
 void loop() {
@@ -69,35 +67,12 @@ void loop() {
   }
 
   // calculate the error based on all sensor values
-  float error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
-                 values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) /
+  float error = (-6 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
+                 values[4] + 2 * values[5] + 4 * values[6] + 6 * values[7]) /
                 4.0; // we could trade 4.0 for the sum of the weight? idk
 
-  // Serial.print("e:");
-  // Serial.print(error);
-
-  /////////////// PD CONTROLLER ///////////////////
-  // unsigned long current_time = millis();
-
-  // // Time difference in seconds
-  // float dt_seconds = (float)(current_time - previous_time) / 1000.0;
-
-  // // prevent division by zero (dt is too small)
-  // if (dt_seconds == 0) {
-  //   dt_seconds = 1.0 / 50.0; // use a small dt instead of zero
-  // }
-
-  // Serial.print("error: ");
-  // Serial.println(error);
-
   float derivative = (error - previous_error);
-
-  // Serial.print("derivative: ");
-  // Serial.println(derivative);
-
-  // update for next iteration
-  previous_error = error;
-  // previous_time = current_time;
+  previous_error = error; // update for next iteration
 
   // this moves the car
   int base_speed = 30;
@@ -113,6 +88,14 @@ void loop() {
   // int leftSpd_pwm = constrain(leftSpd_f, 0, 255); // Constrain to 0-255
   // int rightSpd_pwm = constrain(rightSpd_f, 0, 255);
 
+  // if (error < -2300 || reached_end == 1) {
+  //   reached_end = false;
+  //   digitalWrite(right_dir_pin, LOW); // set this to high for donut!
+  // } else if (error < -2300 && reached_end == 0) {
+  //   reached_end = true;
+  //   digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
+  // }
+
   if (rightSpd_f < 0) {
     digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
   } else {
@@ -123,15 +106,6 @@ void loop() {
     digitalWrite(left_dir_pin, HIGH); // set this to high for donut!
   } else {
     digitalWrite(left_dir_pin, LOW); // set this to high for donut!
-  }
-
-  if (error < -2300 && reached_end == 1) {
-    reached_end = false;
-    digitalWrite(right_dir_pin, LOW); // set this to high for donut!
-
-  } else if (error < -2300 && reached_end == 0) {
-    reached_end = true;
-    digitalWrite(right_dir_pin, HIGH); // set this to high for donut!
   }
 
   analogWrite(left_pwm_pin, abs(leftSpd_f));
