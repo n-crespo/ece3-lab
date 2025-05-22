@@ -67,24 +67,24 @@ void loop() {
   }
 
   // calculate the error based on all sensor values
-  int bias = -10;
-  float error =
-      (-1 * values[0] - 5 * values[1] - 3 * values[2] - 2 * values[3] +
-       values[4] + 2 * values[5] + 4 * values[6] + 1 * values[7]) /
-          4.0 +
-      bias; // we could trade 4.0 for the sum of the weight? idk
+  int bias = -1;
+  float error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
+                 values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) /
+                    4.0 +
+                bias; // we could trade 4.0 for the sum of the weight? idk
 
   float derivative = (error - previous_error);
   // Serial.println(error);
   previous_error = error; // update for next iteration
 
   // this moves the car
-  int base_speed = 25;
+  int base_speed = 30;
   float kp = 0.04;
   float kd = 0.15;
   // how much should derivative affect this thing? needs to be tuned
 
   float adjustment = (kp * error) + (kd * derivative);
+  Serial.println(adjustment);
 
   float rightSpd_f = base_speed + adjustment;
   float leftSpd_f = base_speed - adjustment;
