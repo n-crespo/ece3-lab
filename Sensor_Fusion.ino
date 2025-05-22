@@ -68,10 +68,11 @@ void loop() {
 
   // calculate the error based on all sensor values
   int bias = -1;
-  float error = (-8 * values[0] - 4 * values[1] - 2 * values[2] - values[3] +
-                 values[4] + 2 * values[5] + 4 * values[6] + 8 * values[7]) /
-                    4.0 +
-                bias; // we could trade 4.0 for the sum of the weight? idk
+  float error =
+      (-15 * values[0] - 14 * values[1] - 12 * values[2] - 8 * values[3] +
+       8 * values[4] + 12 * values[5] + 14 * values[6] + 15 * values[7]) /
+          8.0 +
+      bias; // we could trade 4.0 for the sum of the weight? idk
 
   float derivative = (error - previous_error);
   // Serial.println(error);
